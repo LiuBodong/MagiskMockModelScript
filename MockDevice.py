@@ -6,24 +6,28 @@ import sys
 import os
 
 
-def generate_resources(manufacture: str, brand: str, model: str) -> None:
+def generate_resources(manufacture: str, brand: str, model: str, name: str) -> None:
+    if not name:
+        name = model
+
     res_dir = os.path.join("/tmp", "-".join((manufacture, brand, model)))
     if not os.path.exists(res_dir):
         os.makedirs(res_dir)
 
     with open(os.path.join(res_dir, "system.prop"), "w+") as f:
         f.write(f"ro.product.manufacturer={manufacture}\n")
-        f.write(f"ro.product.brand={brand}\n")
+        if brand:
+            f.write(f"ro.product.brand={brand}\n")
         f.write(f"ro.product.model={model}\n")
         f.flush()
 
     with open(os.path.join(res_dir, "module.prop"), "w+") as f:
-        f.write(f"id=MockDevice{model}\n")
-        f.write(f"name=MockDevice{model}\n")
+        f.write(f"id=MockDevice{name}\n")
+        f.write(f"name=MockDevice{name}\n")
         f.write(f"version=1.0\n")
         f.write(f"versionCode=1\n")
         f.write(f"author={os.getlogin()}\n")
-        f.write(f"description=Mock device to {manufacture}-{model}\n")
+        f.write(f"description=Mock device to {manufacture}-{name}\n")
         f.flush()
 
     script_dir = os.path.join(res_dir, "META-INF", "com", "google", "android")
@@ -39,7 +43,7 @@ def generate_resources(manufacture: str, brand: str, model: str) -> None:
         f.write("#MAGISK\n")
         f.flush()
 
-    zip_file = os.path.join("/tmp", f"mock-{manufacture}-{model}")
+    zip_file = os.path.join("/tmp", f"mock-{manufacture}-{name}")
     zip_res = shutil.make_archive(
         base_name=zip_file,
         format="zip",
@@ -62,7 +66,8 @@ if __name__ == "__main__":
     arg_parser.add_argument(
         "-b", "--brand",
         type=str,
-        required=True,
+        required=False,
+        default="",
         help="Product brand"
     )
     arg_parser.add_argument(
@@ -70,6 +75,12 @@ if __name__ == "__main__":
         type=str,
         required=True,
         help="Product model"
+    )
+    arg_parser.add_argument(
+        "-nm", "--name",
+        type=str,
+        required=True,
+        help="Zip file display name"
     )
     arg_parser.add_argument(
         "-l", "--list-products",
@@ -83,4 +94,4 @@ if __name__ == "__main__":
         print("https://github.com/KHwang9883/MobileModels")
         sys.exit(0)
 
-    generate_resources(configs.manufacture, configs.brand, configs.model)
+    generate_resources(configs.manufacture, configs.brand, configs.model, configs.name)
