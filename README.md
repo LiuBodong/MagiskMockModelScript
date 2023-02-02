@@ -6,11 +6,11 @@
 
 机型列表可在 [这里](https://github.com/KHwang9883/MobileModels) 查询
 
-python3 MockDevice.py -m "制造商" -b "品牌" -md "型号"
+python3 MockDevice.py -m "制造商" -b "品牌" -md "型号" -nm "显示名称"
 
 例如
 
 ```bash
 # 要伪装小米11
-python3 MockDevice.py -m Xiaomi -b xiaomi -md M2011K2C
+python3 MockDevice.py -m Xiaomi -b xiaomi -md M2011K2C -nm 
 ```
