@@ -9,6 +9,7 @@ import os
 def generate_resources(manufacture: str, brand: str, model: str, name: str) -> None:
     if not name:
         name = model
+    name = name.replace(' ', '-')
 
     res_dir = os.path.join("/tmp", "-".join((manufacture, brand, model)))
     if not os.path.exists(res_dir):
@@ -22,8 +23,8 @@ def generate_resources(manufacture: str, brand: str, model: str, name: str) -> N
         f.flush()
 
     with open(os.path.join(res_dir, "module.prop"), "w+") as f:
-        f.write(f"id=MockDevice{name}\n")
-        f.write(f"name=MockDevice{name}\n")
+        f.write(f"id=Mock-Device-{name}\n")
+        f.write(f"name=Mock-Device-{name}\n")
         f.write(f"version=1.0\n")
         f.write(f"versionCode=1\n")
         f.write(f"author={os.getlogin()}\n")
